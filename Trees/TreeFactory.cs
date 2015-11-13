@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
+using static NLA_Tool.Trees.LexicalCategory;
+using static NLA_Tool.Trees.PhraseCategory;
 
 namespace NLA_Tool.Trees
 {
-    static class TreeFactory
+    internal static class TreeFactory
     {
         /// <summary>
         /// Recursively builds a phrase structure tree from the given word.
@@ -19,11 +20,29 @@ namespace NLA_Tool.Trees
 
             Terminal[] terminals = new Terminal[words.Length];
 
+            // In case we don't find the words in the dictionary collect all the error messages
+            List<KeyNotFoundException> wordsNotFound = new List<KeyNotFoundException>();
+
             for (int i = 0; i < words.Length; i++)
             {
-                terminals[i] = new Terminal(words[i], d.lookupCategory(words[i]));
+                try
+                {
+                    terminals[i] = new Terminal(words[i], d.lookupCategory(words[i]));
+                }
+                catch (KeyNotFoundException e)
+                {
+                    wordsNotFound.Add(e);
+                    continue;
+                }
             }
 
+            if (wordsNotFound.Count > 0)
+            {
+                foreach (KeyNotFoundException e in wordsNotFound) Console.WriteLine(e.Message);
+                Console.Write("\nPress any key to exit");
+                Console.ReadKey();
+                System.Environment.Exit(-1); // Completed with errors.
+            }
             return merge(terminals);
         }
 
@@ -35,24 +54,43 @@ namespace NLA_Tool.Trees
         /// <returns>A phrase structure tree representing the hierarchy of structures of the sentence.</returns>
         private static Phrase merge(Terminal[] terminals)
         {
-            Terminal leftTerminal = terminals[0];
-
             // Base case
             if (terminals.Length == 1)
+                return new Phrase(new Intermediate(terminals[0]));
+
+            // If we get here, then there are more than 1 word in the array.
+            Phrase rightPhrase = merge(terminals.Skip(1).ToArray());
+            Terminal c = terminals[0]; // For quick reference.
+            Intermediate currentIntermediate = new Intermediate(terminals[0]);
+            Phrase currentPhrase = new Phrase(currentIntermediate);
+
+            //
+            // Try and find ways to assign currentIntermediate as a specifier for rightPhrase. If not, add it as a head of a new parent phrase
+            //
+
+            // NP with DP specifier
+            if (rightPhrase.PhraseCategory == NP && c.Category == Determiner)
             {
-                Intermediate i = new Intermediate(leftTerminal);
-                return new Phrase(i);
+                rightPhrase.Specifier = currentPhrase; // Set the current word as a specifier for the phrase
+                return rightPhrase;
             }
-            else if (terminals.Length == 2)
+            // NP with AP specifier
+            else if (rightPhrase.PhraseCategory == NP && c.Category == Adjective)
             {
-                switch (terminals[0].Category)
-                {
-                    case LexicalCategory.Determiner:
-                        return new Phrase(new Phrase(new Intermediate(terminals[0])), new Intermediate(terminals[1]));
-                }
+                rightPhrase.Specifier = currentPhrase;
+                return rightPhrase;
             }
-            Intermediate intermediate = new Intermediate(leftTerminal, merge(terminals.Skip(1).ToArray()));
-            return new Phrase(intermediate);
+
+            // SPECIAL CASE: if currentPhrase is a NP and rightPhrase is a VP, this is a TP (i.e. sentence)!
+            else if ((currentPhrase.PhraseCategory == NP && rightPhrase.PhraseCategory == VP))
+            {
+                Phrase TP = new Phrase(currentPhrase, new Intermediate(new Terminal("T",LexicalCategory.Tense),rightPhrase));
+                return TP;
+            }
+
+            // If we get this far, just set the currentPhrase as the parent phrase with rightPhrase as its complement
+            currentPhrase.Intermediate.Complement = rightPhrase;
+            return currentPhrase;
         }
 
         /// <summary>

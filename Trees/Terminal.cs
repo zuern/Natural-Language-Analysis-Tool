@@ -9,7 +9,7 @@ namespace NLA_Tool.Trees
     /// <summary>
     /// Represents a terminal branch of a phrase structure tree.
     /// </summary>
-    class Terminal
+    public class Terminal
     {
         /// <summary>
         /// Represents a word in the phrase
@@ -24,6 +24,35 @@ namespace NLA_Tool.Trees
         {
             Word = word;
             Category = category;
+        }
+
+        public override string ToString()
+        {
+            switch (Category)
+            {
+                case LexicalCategory.Noun:
+                    return "N";
+                case LexicalCategory.Verb:
+                    return "V";
+                case LexicalCategory.Adjective:
+                    return "Adj";
+                case LexicalCategory.Adverb:
+                    return "Adv";
+                case LexicalCategory.Preposition:
+                    return "P";
+                case LexicalCategory.Determiner:
+                    return "det";
+                case LexicalCategory.Auxilliary:
+                    return "aux";
+                case LexicalCategory.Pronoun:
+                    return "N";
+                case LexicalCategory.Punctuation:
+                    return "";
+                case LexicalCategory.Tense:
+                    return "T";
+                default:
+                    return "SOMETHING WENT HORRIBLY WRONG.";
+            }
         }
     }
 }

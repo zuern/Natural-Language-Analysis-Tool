@@ -9,7 +9,7 @@ namespace NLA_Tool.Trees
     /// <summary>
     /// Represents the intermediate (X') node of a phrase structure.
     /// </summary>
-    class Intermediate
+    public class Intermediate
     {
         #region Public Properties
         /// <summary>
@@ -27,10 +27,16 @@ namespace NLA_Tool.Trees
         /// </summary>
         public bool hasComplement { get { return (Complement != null); } }
 
-        public PhraseCategory PhraseCategory { get; private set; }
+        /// <summary>
+        /// TEMPORARY FIX - Head should never be null, however I am doing this for now to enable me to use TP type phrases without specifying tense.
+        /// </summary>
+        public bool hasHead { get { return (Head != null); } }
+
+        public virtual PhraseCategory PhraseCategory { get; private set; }
         #endregion
 
         #region Constructors
+
         /// <summary>
         /// Creates a new instance of Intermediate
         /// </summary>
@@ -62,37 +68,81 @@ namespace NLA_Tool.Trees
         /// <returns>The appropriate <c>PhraseCategory</c> of the Intermediate Phrase</returns>
         private void setPhraseCategory()
         {
-            switch (Head.Category)
+            if (Head == null)
+                PhraseCategory = PhraseCategory.TP; // TODO: Temporary hack to avoid dealing with tense markers in sentences.
+            else
             {
-                case LexicalCategory.Noun:
-                    PhraseCategory = Trees.PhraseCategory.NP;
+                switch (Head.Category)
+                {
+                    case LexicalCategory.Noun:
+                        PhraseCategory = Trees.PhraseCategory.NP;
+                        break;
+                    case LexicalCategory.Verb:
+                        PhraseCategory = Trees.PhraseCategory.VP;
+                        break;
+                    case LexicalCategory.Adjective:
+                        PhraseCategory = Trees.PhraseCategory.AP;
+                        break;
+                    case LexicalCategory.Adverb:
+                        PhraseCategory = Trees.PhraseCategory.AdvP;
+                        break;
+                    case LexicalCategory.Preposition:
+                        PhraseCategory = Trees.PhraseCategory.PP;
+                        break;
+                    case LexicalCategory.Determiner:
+                        PhraseCategory = Trees.PhraseCategory.DP;
+                        break;
+                    case LexicalCategory.Auxilliary:
+                        PhraseCategory = Trees.PhraseCategory.AP;
+                        break;
+                    case LexicalCategory.Pronoun:
+                        PhraseCategory = Trees.PhraseCategory.NP;
+                        break;
+                    case LexicalCategory.Punctuation:
+                        throw new Exception("Punctuation cannot be the head of an intermediate phrase.");
+                    default:
+                        break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Prints the Category of (X') that this is. Example, if the Head is a noun, returns (N') without the parenthesis.
+        /// </summary>
+        public override string ToString()
+        {
+            string type;
+            switch (PhraseCategory)
+            {
+                case PhraseCategory.NP:
+                    type = "N";
                     break;
-                case LexicalCategory.Verb:
-                    PhraseCategory = Trees.PhraseCategory.VP;
+                case PhraseCategory.VP:
+                    type = "V";
                     break;
-                case LexicalCategory.Adjective:
-                    PhraseCategory = Trees.PhraseCategory.AP;
+                case PhraseCategory.AP:
+                    type = "A";
                     break;
-                case LexicalCategory.Adverb:
-                    PhraseCategory = Trees.PhraseCategory.AdvP;
+                case PhraseCategory.AdvP:
+                    type = "Adv";
                     break;
-                case LexicalCategory.Preposition:
-                    PhraseCategory = Trees.PhraseCategory.PP;
+                case PhraseCategory.DP:
+                    type = "D";
                     break;
-                case LexicalCategory.Determiner:
-                    PhraseCategory = Trees.PhraseCategory.DP;
+                case PhraseCategory.PP:
+                    type = "P";
                     break;
-                case LexicalCategory.Auxilliary:
-                    PhraseCategory = Trees.PhraseCategory.AP;
+                case PhraseCategory.TP:
+                    type = "T";
                     break;
-                case LexicalCategory.Pronoun:
-                    PhraseCategory = Trees.PhraseCategory.NP;
+                case PhraseCategory.CP:
+                    type = "C";
                     break;
-                case LexicalCategory.Punctuation:
-                    throw new Exception("Punctuation cannot be the head of an intermediate phrase.");
                 default:
+                    type = "SOMETHING WENT HORRIBLY WRONG";
                     break;
             }
+            return type + "'";
         }
 
         #endregion

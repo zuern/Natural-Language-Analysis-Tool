@@ -53,7 +53,7 @@ namespace NLA_Tool
         {
             foreach (Terminal t in entries)
                 if (t.Word == word) return t.Category;
-            throw new KeyNotFoundException("Could not find the word in the dictionary.");
+            throw new KeyNotFoundException("Could not find the word in the dictionary: \"" + word + "\"");
         }
     }
 }

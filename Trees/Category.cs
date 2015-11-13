@@ -8,7 +8,7 @@ namespace NLA_Tool.Trees
     /// <summary>
     /// All of the possible types of <see cref="Phrase"/>
     /// </summary>
-    enum PhraseCategory
+    public enum PhraseCategory
     {
         NP, VP, AP, AdvP, DP, PP, TP, CP
     }
@@ -16,7 +16,7 @@ namespace NLA_Tool.Trees
     /// <summary>
     /// All of the supported lexical categories of words.
     /// </summary>
-    enum LexicalCategory
+    public enum LexicalCategory
     {
         Noun,
         Verb,
@@ -26,7 +26,7 @@ namespace NLA_Tool.Trees
         Determiner,
         Auxilliary,
         Pronoun,
-        Punctuation
+        Punctuation,
+        Tense
     }
-
 }

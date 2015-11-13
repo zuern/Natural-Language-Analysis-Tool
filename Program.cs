@@ -10,15 +10,18 @@ namespace NLA_Tool
     class Program
     {
         private static float    version         = 1.1F;
-        private static String   InputPhrase     = "";
+        private static String   InputPhrase     = "Mark likes the dog.";
         private static String   LexiconPath     = "../../dict.csv";
-        private static String   RulesPath       = "../../PhraseRules.csv";
         public static bool      verboseOutput   = false;
 
+        /// <summary>
+        /// Main point of entry for the program
+        /// </summary>
+        /// <param name="args">Arguments passed to the program from the terminal</param>
         static void Main(string[] args)
         {
             // Set class variables with data from args
-            processArgs(args);
+            //processArgs(args);
 
             // Print header info to console
             init();
@@ -27,32 +30,13 @@ namespace NLA_Tool
             Lexicon dictionary = new Lexicon(LexiconPath);
 
             // Generate the phrase structure tree.
-            Phrase phraseTree = Trees.TreeFactory.buildTree(InputPhrase,dictionary);
+            Phrase phraseTree = TreeFactory.buildTree(InputPhrase,dictionary);
 
-            printTree(phraseTree,0);
+            phraseTree.PrintTreeStructureToConsole();
 
             // Wait for further instructions.
             Console.ReadKey();
 
-        }
-
-        private static void printTree(Phrase phraseTree, int level)
-        {
-            p(phraseTree.Intermediate.PhraseCategory.ToString(), level);
-            p(phraseTree.Intermediate.Head.Word, level);
-
-            if (phraseTree.Intermediate.hasComplement)
-            {
-                printTree(phraseTree.Intermediate.Complement, level + 1);
-            }
-        }
-
-        private static void p(String text,int level)
-        {
-            string p1 = "=> ";
-            p1 = new String(' ', level * 2) + p1;
-
-            Console.WriteLine(p1 + text);
         }
         
         /// <summary>
