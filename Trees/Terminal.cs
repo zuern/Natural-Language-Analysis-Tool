@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NLA_Tool.Trees
 {
@@ -18,7 +14,7 @@ namespace NLA_Tool.Trees
         /// <summary>
         /// The lexical category of the word in the phrase.
         /// </summary>
-        public LexicalCategory Category { get; private set; }
+        public LexicalCategory Category { get; }
 
         public Terminal(String word, LexicalCategory category)
         {

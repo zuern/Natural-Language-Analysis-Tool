@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace NLA_Tool.Trees
+﻿namespace NLA_Tool.Trees
 {
     /// <summary>
     /// All of the possible types of <see cref="Phrase"/>
     /// </summary>
     public enum PhraseCategory
     {
-        NP, VP, AP, AdvP, DP, PP, TP, CP
+        Np, Vp, Ap, AdvP, Dp, Pp, Tp, Cp
     }
 
     /// <summary>
@@ -25,6 +20,7 @@ namespace NLA_Tool.Trees
         Preposition,
         Determiner,
         Auxilliary,
+        Conjunction,
         Pronoun,
         Punctuation,
         Tense

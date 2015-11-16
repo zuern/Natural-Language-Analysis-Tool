@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NLA_Tool.Trees
 {
@@ -25,12 +21,12 @@ namespace NLA_Tool.Trees
         /// <summary>
         /// True if <see cref="Complement"/> is not null.
         /// </summary>
-        public bool hasComplement { get { return (Complement != null); } }
+        public bool HasComplement => Complement != null;
 
         /// <summary>
         /// TEMPORARY FIX - Head should never be null, however I am doing this for now to enable me to use TP type phrases without specifying tense.
         /// </summary>
-        public bool hasHead { get { return (Head != null); } }
+        public bool HasHead => Head != null;
 
         public virtual PhraseCategory PhraseCategory { get; private set; }
         #endregion
@@ -44,18 +40,18 @@ namespace NLA_Tool.Trees
         public Intermediate(Terminal head)
         {
             Head = head;
-            setPhraseCategory();
+            SetPhraseCategory();
         }
 
         /// <summary>
         /// Creates a new instance of Intermediate
         /// </summary>
         /// <param name="head">The head of the intermediate phrase</param>
-        /// <param name="Complement">The complement phrase to attach</param>
-        public Intermediate(Terminal head, Phrase Complement)
+        /// <param name="complement">The complement phrase to attach</param>
+        public Intermediate(Terminal head, Phrase complement)
             : this(head)  // Constructor chaining see http://stackoverflow.com/questions/829870/calling-constructor-from-other-constructor-in-same-class
         {
-            this.Complement = Complement;
+            Complement = complement;
         } 
         #endregion
 
@@ -66,42 +62,40 @@ namespace NLA_Tool.Trees
         /// <remarks>Note: <c>Head</c> must be initialized before using this method</remarks>
         /// </summary>
         /// <returns>The appropriate <c>PhraseCategory</c> of the Intermediate Phrase</returns>
-        private void setPhraseCategory()
+        private void SetPhraseCategory()
         {
             if (Head == null)
-                PhraseCategory = PhraseCategory.TP; // TODO: Temporary hack to avoid dealing with tense markers in sentences.
+                PhraseCategory = PhraseCategory.Tp; // TODO: Temporary hack to avoid dealing with tense markers in sentences.
             else
             {
                 switch (Head.Category)
                 {
                     case LexicalCategory.Noun:
-                        PhraseCategory = Trees.PhraseCategory.NP;
+                        PhraseCategory = PhraseCategory.Np;
                         break;
                     case LexicalCategory.Verb:
-                        PhraseCategory = Trees.PhraseCategory.VP;
+                        PhraseCategory = PhraseCategory.Vp;
                         break;
                     case LexicalCategory.Adjective:
-                        PhraseCategory = Trees.PhraseCategory.AP;
+                        PhraseCategory = PhraseCategory.Ap;
                         break;
                     case LexicalCategory.Adverb:
-                        PhraseCategory = Trees.PhraseCategory.AdvP;
+                        PhraseCategory = PhraseCategory.AdvP;
                         break;
                     case LexicalCategory.Preposition:
-                        PhraseCategory = Trees.PhraseCategory.PP;
+                        PhraseCategory = PhraseCategory.Pp;
                         break;
                     case LexicalCategory.Determiner:
-                        PhraseCategory = Trees.PhraseCategory.DP;
+                        PhraseCategory = PhraseCategory.Dp;
                         break;
                     case LexicalCategory.Auxilliary:
-                        PhraseCategory = Trees.PhraseCategory.AP;
+                        PhraseCategory = PhraseCategory.Ap;
                         break;
                     case LexicalCategory.Pronoun:
-                        PhraseCategory = Trees.PhraseCategory.NP;
+                        PhraseCategory = PhraseCategory.Np;
                         break;
                     case LexicalCategory.Punctuation:
                         throw new Exception("Punctuation cannot be the head of an intermediate phrase.");
-                    default:
-                        break;
                 }
             }
         }
@@ -114,28 +108,28 @@ namespace NLA_Tool.Trees
             string type;
             switch (PhraseCategory)
             {
-                case PhraseCategory.NP:
+                case PhraseCategory.Np:
                     type = "N";
                     break;
-                case PhraseCategory.VP:
+                case PhraseCategory.Vp:
                     type = "V";
                     break;
-                case PhraseCategory.AP:
+                case PhraseCategory.Ap:
                     type = "A";
                     break;
                 case PhraseCategory.AdvP:
                     type = "Adv";
                     break;
-                case PhraseCategory.DP:
+                case PhraseCategory.Dp:
                     type = "D";
                     break;
-                case PhraseCategory.PP:
+                case PhraseCategory.Pp:
                     type = "P";
                     break;
-                case PhraseCategory.TP:
+                case PhraseCategory.Tp:
                     type = "T";
                     break;
-                case PhraseCategory.CP:
+                case PhraseCategory.Cp:
                     type = "C";
                     break;
                 default:

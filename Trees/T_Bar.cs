@@ -1,13 +1,15 @@
 ﻿namespace NLA_Tool.Trees
 {
-    class T_Bar : Intermediate
+    class Bar : Intermediate
     {
         /// <summary>
         /// Creates a T' object. NOTE: Does not handle tense yet i.e. doesn't have a head.
         /// </summary>
-        /// <param name="Complement">The "tensed" part of the sentence</param>
-        public T_Bar(Phrase Complement) : base(null, Complement) { }
+        /// <param name="complement">The "tensed" part of the sentence</param>
+        public Bar(Phrase complement) : base(null, complement) { }
 
-        public override PhraseCategory PhraseCategory { get { return PhraseCategory.TP; } }
+        public Bar(Terminal head, Phrase complement) : base(head, complement) { }
+
+        public override PhraseCategory PhraseCategory => PhraseCategory.Tp;
     }
 }

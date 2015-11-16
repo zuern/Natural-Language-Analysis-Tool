@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NLA_Tool.Trees
 {
@@ -34,7 +30,7 @@ namespace NLA_Tool.Trees
 
         #region Private Properties
 
-        private Intermediate intermediate;
+        private Intermediate _intermediate;
 
         #endregion
 
@@ -49,45 +45,43 @@ namespace NLA_Tool.Trees
         /// Required: An intermediate phrase
         /// </summary>
         public Intermediate Intermediate {
-            get { return intermediate; }
-            set {
+            get { return _intermediate; }
+            set
+            {
                 if (value == null)
-                    throw new ArgumentNullException("Intermediate cannot be null!");
+                    throw new Exception("Intermediate cannot be null.");
                 else
-                    intermediate = value;
+                    _intermediate = value;
             } 
         }
 
         /// <summary>
         /// Returns true if <see cref="Specifier"/> is not null.
         /// </summary>
-        public bool hasSpecifier { get { return (Specifier != null); } }
+        public bool HasSpecifier => Specifier != null;
 
-        public PhraseCategory PhraseCategory
-        {
-            get { return Intermediate.PhraseCategory; }
-        }
+        public PhraseCategory PhraseCategory => Intermediate.PhraseCategory;
 
         #endregion
 
         #region Private Methods
-        private void printTree(int indentLevel)
+        private void PrintTree(int indentLevel)
         {
-            string diagonal = "{0}\\-{1}"; // Will produce a string like this "    \-NP" Note that the indents and the NP part are variable
+            string diagonal = "{0}|-{1}"; // Will produce a string like this "    \-NP" Note that the indents and the NP part are variable
             string straight = "{0}|-{1}";  // Will produce a string like this "    |-NP" Note that the indents and the NP part are variable
 
             // Print the (XP)
-            p(diagonal, indentLevel, PhraseCategory.ToString());
+            P(diagonal, indentLevel, PhraseCategory.ToString());
 
             // Print the specifier's stuff if specifier is not null.
-            if (hasSpecifier) Specifier.PrintTreeStructureToConsole(indentLevel+1);
+            if (HasSpecifier) Specifier.PrintTree(indentLevel+1);
             // Print the (X')
-            p(diagonal, indentLevel + 1, Intermediate.ToString());
+            P(diagonal, indentLevel + 1, Intermediate.ToString());
             // Print the (X')'s stuff
-            p(diagonal, indentLevel + 2, Intermediate.Head.ToString());
-            p(straight, indentLevel + 3, Intermediate.Head.Word);
+            P(diagonal, indentLevel + 2, Intermediate.Head.ToString());
+            P(straight, indentLevel + 3, Intermediate.Head.Word);
             // Print the complement of X' if not null
-            if (Intermediate.hasComplement) Intermediate.Complement.PrintTreeStructureToConsole(indentLevel + 2);
+            if (Intermediate.HasComplement) Intermediate.Complement.PrintTree(indentLevel + 2);
         }
 
         /// <summary>
@@ -96,9 +90,10 @@ namespace NLA_Tool.Trees
         /// <param name="formatStr">The format string (use like <c>String.Format</c>)</param>
         /// <param name="indentLevel">The number of indents to put before the text</param>
         /// <param name="text">The information to print</param>
-        private void p(string formatStr, int indentLevel, String text)
+        private static void P(string formatStr, int indentLevel, string text)
         {
-            Console.WriteLine(String.Format(formatStr, new String(' ', indentLevel), text));
+            var message = string.Format(formatStr, new string('-', indentLevel), text);
+            Console.WriteLine(message);
         }
         #endregion
 
@@ -107,9 +102,9 @@ namespace NLA_Tool.Trees
         /// <summary>
         /// Prints this Phrase Structure Tree to console.
         /// </summary>
-        public void PrintTreeStructureToConsole(int level = 0)
+        public void PrintTreeStructureToConsole()
         {
-            printTree(level);
+            PrintTree(0);
         }
         #endregion
     }
