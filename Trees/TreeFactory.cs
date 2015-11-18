@@ -21,7 +21,7 @@ namespace NLA_Tool.Trees
         {
             var words = ProcessPhrase(inputPhrase);
 
-            var terminals = new Terminal[words.Length];
+            Terminal[] terminals = new Terminal[words.Length];
 
             // In case we don't find the words in the dictionary collect all the error messages
             var wordsNotFound = new List<WordNotFoundException>();
@@ -54,9 +54,28 @@ namespace NLA_Tool.Trees
                         dictionary.AddToDictionary(wordNotFoundException.Word, category);
                     }
                 }
-            } // End if (wordsNotFound.Count > 0)
+
+                return BuildTree(inputPhrase, dictionary);
+            }
 
             return Merge(terminals);
+        }
+
+        /// <summary>
+        ///     Removes leading and trailing whitespace and removes any punctuation marks.
+        /// </summary>
+        /// <param name="word">The word to format.</param>
+        private static void FormatWord(ref string word)
+        {
+            var newString = "";
+            foreach (var c in word)
+            {
+                if (!char.IsPunctuation(c))
+                {
+                    newString += c;
+                }
+            }
+            word = newString.ToLower();
         }
 
         /// <summary>
@@ -94,6 +113,7 @@ namespace NLA_Tool.Trees
         /// <returns>A phrase structure tree representing the hierarchy of structures of the sentence.</returns>
         private static Phrase Merge(Terminal[] terminals)
         {
+            if (terminals == null) throw new ArgumentNullException(nameof(terminals));
             // Base case
             if (terminals.Length == 1)
                 return new Phrase(new Intermediate(terminals[0]));
@@ -109,22 +129,22 @@ namespace NLA_Tool.Trees
             //
 
             // NP with DP specifier
-            if (rightPhrase.PhraseCategory == Np && c.Category == Determiner)
+            if (rightPhrase.PhraseCategory == NP && c.Category == Determiner)
             {
                 rightPhrase.Specifier = currentPhrase; // Set the current word as a specifier for the phrase
                 return rightPhrase;
             }
             // NP with AP specifier
-            if (rightPhrase.PhraseCategory == Np && c.Category == Adjective)
+            if (rightPhrase.PhraseCategory == NP && c.Category == Adjective)
             {
                 rightPhrase.Specifier = currentPhrase;
                 return rightPhrase;
             }
 
-            // SPECIAL CASE: if currentPhrase is a NP and rightPhrase is a VP, this is a TP (i.e. sentence)!
-            if (currentPhrase.PhraseCategory == Np && rightPhrase.PhraseCategory == Vp)
+            // SPECIAL CASE: if currentPhrase is a NP and rightPhrase is a VP, this is a IP (i.e. sentence)!
+            if (currentPhrase.PhraseCategory == NP && rightPhrase.PhraseCategory == VP)
             {
-                var tp = new Phrase(currentPhrase, new Bar(new Terminal("{Tense Marker}", Tense), rightPhrase));
+                var tp = new Phrase(currentPhrase, new T_Bar(new Terminal("{Tense Marker}", Tense), rightPhrase));
                 return tp;
             }
 
@@ -148,23 +168,6 @@ namespace NLA_Tool.Trees
             }
 
             return words;
-        }
-
-        /// <summary>
-        ///     Removes leading and trailing whitespace and removes any punctuation marks.
-        /// </summary>
-        /// <param name="word">The word to format.</param>
-        private static void FormatWord(ref string word)
-        {
-            var newString = "";
-            foreach (var c in word)
-            {
-                if (!char.IsPunctuation(c))
-                {
-                    newString += c;
-                }
-            }
-            word = newString.ToLower();
         }
     }
 }

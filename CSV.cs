@@ -20,7 +20,7 @@ namespace NLA_Tool
                 {
                     var line = reader.ReadLine();
                     var words = line.Split(',');
-                    for (int i = 0; i < words.Length; i++)
+                    for (var i = 0; i < words.Length; i++)
                     {
                         words[i] = words[i].Trim();
                     }

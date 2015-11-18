@@ -6,8 +6,8 @@ namespace NLA_Tool
 {
     class Program
     {
-        private static float    _version         = 1.1F;
-        private static string   _inputPhrase     = "Mark drank some sour milk and now he feels very sick.";
+        private static float    _version         = 0.2F;
+        private static string   _inputPhrase1    = "John went to the store.";
         private static string   _lexiconPath     = "../../dict.csv";
         private static bool      VerboseOutput;
 
@@ -18,7 +18,7 @@ namespace NLA_Tool
         static void Main(string[] args)
         {
             // Set class variables with data from args
-            ProcessArgs(args);
+            //ProcessArgs(args);
 
             // Print header info to console
             Init();
@@ -27,8 +27,7 @@ namespace NLA_Tool
             var dictionary = new Lexicon(_lexiconPath);
 
             // Generate the phrase structure tree.
-            var phraseTree = TreeFactory.BuildTree(_inputPhrase,dictionary);
-
+            var phraseTree = TreeFactory.BuildTree(_inputPhrase1, dictionary);
             phraseTree.PrintTreeStructureToConsole();
 
             // Wait for further instructions.
@@ -49,10 +48,10 @@ namespace NLA_Tool
                     if (arg == "-V")
                         VerboseOutput = true;
                     else
-                        _inputPhrase = arg;
+                        _inputPhrase1 = arg;
                 }
             }
-            if (_inputPhrase.Length < 1)
+            if (_inputPhrase1.Length < 1)
                 throw new Exception("Need an input phrase to run!");
         }
         
@@ -61,8 +60,8 @@ namespace NLA_Tool
         /// </summary>
         private static void Init()
         {
-            Console.WriteLine("**************************************\n* Natural Language Processing Script *\n*               V" + _version.ToString() + "                 *\n*            Kevin Zuern             *\n**************************************");
-            Console.WriteLine($"Processing the following phrase now: \"{_inputPhrase}\"");
+            Console.WriteLine($"**************************************\n* Natural Language Processing Script *\n*               V{_version.ToString()}                 *\n*            Kevin Zuern             *\n*   Powered by Merriam-Webster Inc.  *\n**************************************");
+            Console.WriteLine($"Processing the following phrase now: \"{_inputPhrase1}\"");
         }
     }
 }

@@ -24,7 +24,7 @@ namespace NLA_Tool.Trees
         public bool HasComplement => Complement != null;
 
         /// <summary>
-        /// TEMPORARY FIX - Head should never be null, however I am doing this for now to enable me to use TP type phrases without specifying tense.
+        /// TEMPORARY FIX - Head should never be null, however I am doing this for now to enable me to use IP type phrases without specifying tense.
         /// </summary>
         public bool HasHead => Head != null;
 
@@ -65,37 +65,45 @@ namespace NLA_Tool.Trees
         private void SetPhraseCategory()
         {
             if (Head == null)
-                PhraseCategory = PhraseCategory.Tp; // TODO: Temporary hack to avoid dealing with tense markers in sentences.
+                PhraseCategory = PhraseCategory.IP; // TODO: Temporary hack to avoid dealing with tense markers in sentences.
             else
             {
                 switch (Head.Category)
                 {
                     case LexicalCategory.Noun:
-                        PhraseCategory = PhraseCategory.Np;
+                        PhraseCategory = PhraseCategory.NP;
                         break;
                     case LexicalCategory.Verb:
-                        PhraseCategory = PhraseCategory.Vp;
+                        PhraseCategory = PhraseCategory.VP;
                         break;
                     case LexicalCategory.Adjective:
-                        PhraseCategory = PhraseCategory.Ap;
+                        PhraseCategory = PhraseCategory.AP;
                         break;
                     case LexicalCategory.Adverb:
                         PhraseCategory = PhraseCategory.AdvP;
                         break;
                     case LexicalCategory.Preposition:
-                        PhraseCategory = PhraseCategory.Pp;
+                        PhraseCategory = PhraseCategory.PP;
                         break;
                     case LexicalCategory.Determiner:
-                        PhraseCategory = PhraseCategory.Dp;
+                        PhraseCategory = PhraseCategory.DP;
                         break;
                     case LexicalCategory.Auxilliary:
-                        PhraseCategory = PhraseCategory.Ap;
+                        PhraseCategory = PhraseCategory.AP;
                         break;
                     case LexicalCategory.Pronoun:
-                        PhraseCategory = PhraseCategory.Np;
+                        PhraseCategory = PhraseCategory.NP;
                         break;
                     case LexicalCategory.Punctuation:
                         throw new Exception("Punctuation cannot be the head of an intermediate phrase.");
+                    case LexicalCategory.Conjunction:
+                        PhraseCategory = PhraseCategory.CP;
+                        break;
+                    case LexicalCategory.Tense:
+                        PhraseCategory = PhraseCategory.IP;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
             }
         }
@@ -108,33 +116,32 @@ namespace NLA_Tool.Trees
             string type;
             switch (PhraseCategory)
             {
-                case PhraseCategory.Np:
+                case PhraseCategory.NP:
                     type = "N";
                     break;
-                case PhraseCategory.Vp:
+                case PhraseCategory.VP:
                     type = "V";
                     break;
-                case PhraseCategory.Ap:
+                case PhraseCategory.AP:
                     type = "A";
                     break;
                 case PhraseCategory.AdvP:
                     type = "Adv";
                     break;
-                case PhraseCategory.Dp:
+                case PhraseCategory.DP:
                     type = "D";
                     break;
-                case PhraseCategory.Pp:
+                case PhraseCategory.PP:
                     type = "P";
                     break;
-                case PhraseCategory.Tp:
-                    type = "T";
+                case PhraseCategory.IP:
+                    type = "I";
                     break;
-                case PhraseCategory.Cp:
+                case PhraseCategory.CP:
                     type = "C";
                     break;
                 default:
-                    type = "SOMETHING WENT HORRIBLY WRONG";
-                    break;
+                    throw new Exception($"No way was found how to print the category for '{PhraseCategory}'");
             }
             return type + "'";
         }

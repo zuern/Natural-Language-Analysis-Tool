@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace NLA_Tool.Trees
 {
@@ -67,8 +68,8 @@ namespace NLA_Tool.Trees
         #region Private Methods
         private void PrintTree(int indentLevel)
         {
-            string diagonal = "{0}|-{1}"; // Will produce a string like this "    \-NP" Note that the indents and the NP part are variable
-            string straight = "{0}|-{1}";  // Will produce a string like this "    |-NP" Note that the indents and the NP part are variable
+            const string diagonal = "{0}\\-{1}"; // Will produce a string like this "    \-NP" Note that the indents and the NP part are variable
+            const string straight = "{0}|-{1}"; // Will produce a string like this "    |-NP" Note that the indents and the NP part are variable
 
             // Print the (XP)
             P(diagonal, indentLevel, PhraseCategory.ToString());
@@ -92,7 +93,7 @@ namespace NLA_Tool.Trees
         /// <param name="text">The information to print</param>
         private static void P(string formatStr, int indentLevel, string text)
         {
-            var message = string.Format(formatStr, new string('-', indentLevel), text);
+            var message = string.Format(formatStr, new string(' ', indentLevel), text);
             Console.WriteLine(message);
         }
         #endregion

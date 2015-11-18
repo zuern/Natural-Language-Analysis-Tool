@@ -45,9 +45,11 @@ namespace NLA_Tool.Trees
                 case LexicalCategory.Punctuation:
                     return "";
                 case LexicalCategory.Tense:
-                    return "T";
+                    return "I";
+                case LexicalCategory.Conjunction:
+                    return "C";
                 default:
-                    return "SOMETHING WENT HORRIBLY WRONG.";
+                    throw new Exception($"Couldn't find a way to print {Category}.");
             }
         }
     }

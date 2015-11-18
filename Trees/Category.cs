@@ -1,11 +1,12 @@
-﻿namespace NLA_Tool.Trees
+﻿// ReSharper disable InconsistentNaming
+namespace NLA_Tool.Trees
 {
     /// <summary>
     /// All of the possible types of <see cref="Phrase"/>
     /// </summary>
     public enum PhraseCategory
     {
-        Np, Vp, Ap, AdvP, Dp, Pp, Tp, Cp
+        NP, VP, AP, AdvP, DP, PP, IP, CP
     }
 
     /// <summary>
